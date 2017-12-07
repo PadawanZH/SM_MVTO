@@ -7,7 +7,7 @@
 #include "../Transaction/lock/Abstract.h"
 #include "../Transaction/Transaction.h"
 
-AbstractLock::LockType stdOutmutex;
+AbstractLock::LockType stdOutmutex;//lock the cout so it dont go intersected
 
 void debuglog(LogLevel logLevel, char const * format, ...){
     char msg[512];
