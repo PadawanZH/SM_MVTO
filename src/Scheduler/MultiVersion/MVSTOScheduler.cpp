@@ -6,7 +6,7 @@
 #include "../../Util/Log.h"
 #include "../../Util/ContainerInstantiate.h"
 
-MVSTOScheduler::MVSTOScheduler(std::list<WSetTransaction> *txList) {
+MVSTOScheduler::MVSTOScheduler(std::list<WSetTransaction*> *txList) {
     if(txList != nullptr){
         init(txList);
     }else{
@@ -14,20 +14,20 @@ MVSTOScheduler::MVSTOScheduler(std::list<WSetTransaction> *txList) {
     }
 }
 
-void MVSTOScheduler::init(std::list<WSetTransaction> *txList) {
+void MVSTOScheduler::init(std::list<WSetTransaction*> *txList) {
     initTxList(txList);
     initDataStructure();
 }
 
-void MVSTOScheduler::initTxList(std::list<WSetTransaction> *txList) {
+void MVSTOScheduler::initTxList(std::list<WSetTransaction*> *txList) {
     this->m_txList = txList;
 }
 
 void MVSTOScheduler::registDataStructure(std::string entryName, std::string typeName ){
-    MVBaseContainer* instance = InstanceOfMVContainer(typeName);
+    AbstractMVBaseContainer* instance = ContainerUtil::InstanceOf(typeName);
 
     if(instance != nullptr){
-        DataStructureMap::const_accessor cacc;
+        DataStructureMap::accessor cacc;
         if(m_dataStructure.insert(cacc, entryName)){
             cacc->second = instance;
         }else{
@@ -44,7 +44,7 @@ void MVSTOScheduler::registDataStructure(std::string entryName, std::string type
 void MVSTOScheduler::registWriteAction(long txID, DataItemLocator dataItem) {
     DataStructureMap::const_accessor cacc;
     if(this->m_dataStructure.find(cacc, dataItem.entryName)){
-        MVBaseContainer* instance = cacc->second;
+        AbstractMVBaseContainer* instance = cacc->second;
         instance->constructWriteOnDataItem(txID, dataItem);
     }else{
         debuglog(LogLevel::ERROR, "when registWriteAction, no entry: %s not found in map", dataItem.entryName.c_str());
@@ -54,14 +54,14 @@ void MVSTOScheduler::registWriteAction(long txID, DataItemLocator dataItem) {
 void MVSTOScheduler::initDataStructure() {
     std::set<std::string> dataAlreadyRegist;
     for(auto txIT = m_txList->begin(); txIT != m_txList->end(); txIT++){
-        WSetTransaction::WriteSet ws = (*txIT).m_writeSet;
+        WSetTransaction::WriteSet ws = (*txIT)->m_writeSet;
         for(auto wsIT = ws.begin(); wsIT != ws.end(); wsIT++){
             auto ret = dataAlreadyRegist.insert((*wsIT).entryName);
             if(ret.second){
                 //new structure
                 registDataStructure((*wsIT).entryName, (*wsIT).typeName);
             }else{
-                registWriteAction((*txIT).txID, (*wsIT));
+                registWriteAction((*txIT)->txID, (*wsIT));
             }
         }
     }

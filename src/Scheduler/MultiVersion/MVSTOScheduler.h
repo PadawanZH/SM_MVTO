@@ -1,5 +1,5 @@
 //
-// Created by zhangan on 17-12-6.
+// Created by zhangan on 17-12-6.pointer of template class
 //
 
 #ifndef TRANSACTIONALSTOSCHEDULER_MVSTOSCHEDULER_H
@@ -11,15 +11,15 @@
 
 class MVSTOScheduler {
 public:
-    typedef tbb::concurrent_hash_map<std::string, MVBaseContainer*> DataStructureMap;
+    typedef tbb::concurrent_hash_map<std::string, AbstractMVBaseContainer*> DataStructureMap;
 
-    std::list<WSetTransaction> *m_txList;
+    std::list<WSetTransaction*> *m_txList;
     DataStructureMap m_dataStructure;
 
-    explicit MVSTOScheduler(std::list<WSetTransaction> *txList);
+    explicit MVSTOScheduler(std::list<WSetTransaction*> *txList);
     //init method
-    void init(std::list<WSetTransaction> *txList);
-    void initTxList(std::list<WSetTransaction> *txList);
+    void init(std::list<WSetTransaction*> *txList);
+    void initTxList(std::list<WSetTransaction*> *txList);
     void initDataStructure();
     void registDataStructure(std::string entryName, std::string typeName);
     void registWriteAction(long txID, DataItemLocator dataItem);

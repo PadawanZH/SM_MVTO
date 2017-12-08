@@ -22,7 +22,8 @@ public:
     // 可能要用“thread_local std::unique_ptr<SomeClass> someClass(new SomeClass(params));”的形式来声明指针
     // uniqu_ptr会在thread退出时释放内存
     static thread_local LogType undoLog;
-    static thread_local long txID;
+    long txID;
+    static thread_local long currentTXID;
 
 private:
     TxState state;

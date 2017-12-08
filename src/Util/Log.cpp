@@ -19,11 +19,11 @@ void debuglog(LogLevel logLevel, char const * format, ...){
 
     stdOutmutex.lock();
     if(logLevel == LogLevel::ERROR){
-        std::cout<<"Log [ERROR] "<<"TX["<<BaseTransaction::txID<<"] :"<<msg<<std::endl;
+        std::cout<<"Log [ERROR] "<<"TX["<<BaseTransaction::currentTXID<<"] :"<<msg<<std::endl;
     }else if(logLevel == LogLevel::WARN){
-        std::cout<<"Log[WARN]: "<<"TX["<<BaseTransaction::txID<<"] :"<<msg<<std::endl;
+        std::cout<<"Log[WARN]: "<<"TX["<<BaseTransaction::currentTXID<<"] :"<<msg<<std::endl;
     }else if(logLevel == LogLevel::INFO){
-        std::cout<<"Log[INFO]: "<<"TX["<<BaseTransaction::txID<<"] :"<<msg<<std::endl;
+        std::cout<<"Log[INFO]: "<<"TX["<<BaseTransaction::currentTXID<<"] :"<<msg<<std::endl;
     }
     stdOutmutex.unlock();
     //#endif

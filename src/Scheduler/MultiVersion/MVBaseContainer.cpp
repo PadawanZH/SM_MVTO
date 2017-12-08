@@ -4,12 +4,14 @@
 
 #include "MVBaseContainer.h"
 
-MVBaseContainer::MVBaseContainer(char *name) : BaseContainer(name) {
+AbstractMVBaseContainer::AbstractMVBaseContainer(char *name) : BaseContainer(name) {}
 
-}
+template <typename valType>
+MVBaseContainer<valType>::MVBaseContainer(char *name) : AbstractMVBaseContainer(name) {}
 
-void MVBaseContainer::constructWriteOnDataItem(long txID, DataItemLocator dataItem) {
-    DataItem* dataHandle = getOrCreateDataItem(dataItem.key);
+template <typename valType>
+void MVBaseContainer<valType>::constructWriteOnDataItem(long txID, DataItemLocator dataItem) {
+    MVBaseContainer::DataItem* dataHandle = getOrCreateDataItem(dataItem.key);
     if(!dataHandle->waitListHeader){
         //construct the header if not exist
         dataHandle->waitListHeader = new WaitListItem(txID, &dataHandle->value, dataItem.optype, WaitListItem::OWNERSHIP::OWNER);
@@ -22,3 +24,4 @@ void MVBaseContainer::constructWriteOnDataItem(long txID, DataItemLocator dataIt
         dataHandle->waitListHeader = new WaitListItem(txID, &tail->NewValue, dataItem.optype, WaitListItem::OWNERSHIP::WAITER);
     }
 }
+

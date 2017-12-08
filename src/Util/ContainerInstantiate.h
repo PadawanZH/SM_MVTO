@@ -9,13 +9,19 @@
 #include "../Boosting/BaseContainer.h"
 #include "../Scheduler/MultiVersion/MVBaseContainer.h"
 
-static std::map<std::string, std::function<MVBaseContainer*(std::string name)>> MVInstanceMap;
+#include "../Testing/testMVScheduler.h"
+
+class ContainerUtil{
+public:
+    static std::map<std::string, std::function<AbstractMVBaseContainer*()>> MVInstanceMap;
 
 /// 需要查证
 /// \param typeName
 /// \return
-MVBaseContainer* InstanceOfMVContainer(std::string typeName){
-    return &(*(MVInstanceMap.find(typeName)->second)(typeName));
-}
+    static AbstractMVBaseContainer* InstanceOf(std::string typeName){
+        return &(*(MVInstanceMap.find(typeName)->second)());
+    }
+};
+
 
 #endif //TRANSACTIONALSTOSCHEDULER_CONTAINERINSTANTIATE_H

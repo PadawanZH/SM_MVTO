@@ -5,5 +5,4 @@
 #include "WSetTransaction.h"
 
 WSetTransaction::WSetTransaction(long id) : BaseTransaction(id) {
-    initWriteSet();
 }

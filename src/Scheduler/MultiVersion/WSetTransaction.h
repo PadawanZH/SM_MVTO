@@ -8,21 +8,6 @@
 
 #include "../../Transaction/Transaction.h"
 
-class WSetTransaction : BaseTransaction{
-public:
-    typedef std::set<DataItemLocator, DataItemLocatorComp> ReadSet, WriteSet;
-
-    WriteSet m_writeSet;
-    explicit WSetTransaction(long id);
-
-    //主要逻辑实现位置
-    std::function *pMainMethod;
-    bool registMainMethod(std::function *method);
-
-
-    virtual void initWriteSet() = 0;
-};
-
 class DataItemLocator{
 public:
     enum OP_TYPE{ WRITE, UPDATE, DELETE};
@@ -54,6 +39,21 @@ class DataAction{
 public:
     long txID;
     DataItemLocator dataItem;
+};
+
+class WSetTransaction : public BaseTransaction{
+public:
+    typedef std::set<DataItemLocator, DataItemLocatorComp> ReadSet, WriteSet;
+
+    WriteSet m_writeSet;
+    explicit WSetTransaction(long id);
+
+    //主要逻辑实现位置
+    std::function<void()> *pMainMethod;
+    bool registMainMethod(std::function<void()> *method);
+
+
+    virtual void initWriteSet() = 0;
 };
 
 #endif //TRANSACTIONALSTOSCHEDULER_WSETTRANSACTION_H

@@ -8,7 +8,7 @@
 
 thread_local BaseTransaction::LogType BaseTransaction::undoLog;
 
-thread_local long BaseTransaction::txID = -1;
+thread_local long BaseTransaction::currentTXID = -1;
 
 long BaseTransaction::getTxID () const {
     return txID;
@@ -16,6 +16,7 @@ long BaseTransaction::getTxID () const {
 
 BaseTransaction::BaseTransaction (long id){
     txID = id;
+    currentTXID = txID;
     this->state = TxState::ACTIVE;
     if(!undoLog.empty()){
         undoLog.clear();
