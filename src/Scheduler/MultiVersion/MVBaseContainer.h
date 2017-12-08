@@ -9,8 +9,15 @@
 #include "../../Boosting/BaseContainer.h"
 #include "WSetTransaction.h"
 
+class AbstractMVBaseContainer : public BaseContainer{
+public:
+    AbstractMVBaseContainer(char *name);
+    virtual void constructWriteOnDataItem(long txID, DataItemLocator dataItem) = 0;
+};
+
+
 template<typename valType>
-class MVBaseContainer : BaseContainer{
+class MVBaseContainer : public AbstractMVBaseContainer{
 public:
 
     class WaitListItem{
@@ -41,13 +48,39 @@ public:
 
     class DataItem{
     public:
+        long key;
         valType value;
         WaitListItem *waitListHeader;
+
+        DataItem(long key, valType initValue){
+            this->key = key;
+            value = initValue;
+            waitListHeader = nullptr;
+        }
+
+        void FreeWaitList(){
+            WaitListItem* tmp;
+            WaitListItem* p = waitListHeader;
+            while(p){
+                tmp = p;
+                p = p->next;
+                delete tmp;
+            }
+        }
+
+        ~DataItem(){
+            FreeWaitList();
+        }
     };
 
     //Init section
     explicit MVBaseContainer(char *name);
     void constructWriteOnDataItem(long txID, DataItemLocator dataItem);
+
+    //do nothing in releaseLocks, because it not using the locks
+    void releaseLocks() override{
+
+    }
 protected:
     virtual DataItem* getOrCreateDataItem(long key) = 0;
 };
